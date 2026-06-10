@@ -1,0 +1,85 @@
+/* ============================
+   VIBIO — Global Design Tokens
+   ============================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+:root {
+  /* Brand colours */
+  --vibio-red: #e50914;
+  --vibio-red-hover: #f40612;
+  --vibio-red-dark: #b20710;
+
+  /* Neutrals */
+  --bg-primary: #000000;
+  --bg-secondary: #141414;
+  --bg-card: rgba(0, 0, 0, 0.72);
+  --bg-input: rgba(255, 255, 255, 0.12);
+  --bg-input-focus: rgba(255, 255, 255, 0.18);
+
+  /* Text */
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-muted: rgba(255, 255, 255, 0.45);
+  --text-placeholder: rgba(255, 255, 255, 0.5);
+
+  /* Borders */
+  --border-input: rgba(255, 255, 255, 0.16);
+  --border-input-focus: rgba(255, 255, 255, 0.4);
+
+  /* Misc */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --shadow-card: 0 8px 40px rgba(0, 0, 0, 0.6);
+  --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================
+   Reset
+   ============================ */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+input {
+  border: none;
+  outline: none;
+  font-family: inherit;
+}
+
+#root {
+  min-height: 100vh;
+}
