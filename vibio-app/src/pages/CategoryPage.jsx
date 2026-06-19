@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { saoSeason1, saoSeason2, saoSeason3 } from '../data/saoData';
 import { Play, Star, ChevronDown, ChevronUp } from 'lucide-react';
@@ -14,6 +14,56 @@ const CategoryPage = ({ title }) => {
   const [modalPlaying, setModalPlaying] = useState(false);
   const [modalControlsVisible, setModalControlsVisible] = useState(false);
   const controlsTimerRef = React.useRef(null);
+  const bgVideoRef = useRef(null);
+
+  /* Auto-unmute video nền khi user tương tác */
+  useEffect(() => {
+    const unmute = () => {
+      if (bgVideoRef.current) {
+        bgVideoRef.current.muted = false;
+        bgVideoRef.current.play().catch(() => {});
+      }
+      document.removeEventListener('click', unmute);
+      document.removeEventListener('keydown', unmute);
+      document.removeEventListener('touchstart', unmute);
+    };
+    document.addEventListener('click', unmute, { once: true });
+    document.addEventListener('keydown', unmute, { once: true });
+    document.addEventListener('touchstart', unmute, { once: true });
+    return () => {
+      document.removeEventListener('click', unmute);
+      document.removeEventListener('keydown', unmute);
+      document.removeEventListener('touchstart', unmute);
+    };
+  }, []);
+
+  const videoBg = (
+    <div style={{ position: 'fixed', inset: 0, zIndex: 0, overflow: 'hidden' }}>
+      <video
+        ref={bgVideoRef}
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="auto"
+        style={{
+          position: 'absolute',
+          inset: 0,
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+          filter: 'brightness(0.25) saturate(0.7)',
+        }}
+      >
+        <source src="/videos/Resident Evil 9 Requiem - Official Trailer  State of Play 2026 - IGN (1080p, h264).mp4" type="video/mp4" />
+      </video>
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        background: 'linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 30%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0.7) 100%)'
+      }} />
+    </div>
+  );
   let movies = [];
   if (title === 'Phim Bộ') {
     movies = [
@@ -55,7 +105,7 @@ const CategoryPage = ({ title }) => {
       {
         id: 6,
         title: "Resident Evil: The Final Chapter (2016)",
-        image: "https://image.tmdb.org/t/p/original/4s2d3xdyqotiVNHTlTlJjrr3q0H.jpg",
+        image: "https://tse4.mm.bing.net/th/id/OIP.CZrLQM7RdQORtA9AwsdSEgHaLH?pid=Api&h=220&P=0",
         rating: "5.5",
         isNew: false
       },
@@ -135,45 +185,45 @@ const CategoryPage = ({ title }) => {
       { id: 209, title: "Gái Già Lắm Chiêu 3 (2020)", image: "https://image.tmdb.org/t/p/w500/jXgHbZ5gEnZc6izj4CjMh8caIrc.jpg", rating: "7.2", isNew: false },
       { id: 210, title: "Ròm (2019)", image: "https://image.tmdb.org/t/p/w500/a3mFE5h1THftDfa6RjzMvsyticc.jpg", rating: "7.6", isNew: false },
       { id: 211, title: "Lật Mặt 6: Tấm Vé Định Mệnh (2023)", image: "https://image.tmdb.org/t/p/w500/3ym9JhjqUu5jKCWxtKVF86Sw4gD.jpg", rating: "8.3", isNew: false },
-{ id: 212, title: `Chị Chị Em Em 2`, image: "https://image.tmdb.org/t/p/w500/qMD2zbQy7fl4J8BZpdYcCWtjp1S.jpg", rating: "7.0", isNew: false },
-{ id: 213, title: `Bẫy Rồng`, image: "https://image.tmdb.org/t/p/w500/LwAmk0IFyZYxfmD0TH8GKZyzGZ.jpg", rating: "5.0", isNew: false },
-{ id: 214, title: `Lửa Phật`, image: "https://image.tmdb.org/t/p/w500/o4oAN2nsMnwVHbjPjKN8pcDsR2b.jpg", rating: "5.6", isNew: false },
-{ id: 215, title: `Hoàng Tử Quỷ`, image: "https://image.tmdb.org/t/p/w500/pX8kCc2ZP82rAZ8IwDsdun1FCAD.jpg", rating: "8.8", isNew: false },
-{ id: 216, title: `Hạnh Phúc Của Mẹ`, image: "https://image.tmdb.org/t/p/w500/bKsXUfvljPjYfytKcjw5FbRHT09.jpg", rating: "8.4", isNew: false },
-{ id: 217, title: `Phim Hồng`, image: "https://image.tmdb.org/t/p/w500/7dHiq9so6XkeyMX2bESUya9T5ZB.jpg", rating: "8.6", isNew: false },
-{ id: 218, title: `Em Chưa 18`, image: "https://image.tmdb.org/t/p/w500/phXbIGRmNZduZwnBjC0dBZfn8lr.jpg", rating: "6.6", isNew: false },
-{ id: 219, title: `Lật Mặt 7: Một Điều Ước`, image: "https://image.tmdb.org/t/p/w500/aSPg7viRKZUp6py0VLVTv6mo3GN.jpg", rating: "7.3", isNew: true },
-{ id: 222, title: `Làng Địa Ngục`, image: "https://image.tmdb.org/t/p/w500/jt31qZw5W1RFXfGyTJCpgjvq2h1.jpg", rating: "5.1", isNew: false },
-{ id: 223, title: `Bi, Đừng Sợ`, image: "https://image.tmdb.org/t/p/w500/lotXs0yvfPvhFCVXjnUsxLLMC2h.jpg", rating: "5.3", isNew: false },
-{ id: 224, title: `Nước, Giấy, Tóc...`, image: "https://image.tmdb.org/t/p/w500/4z2v3v2v4y54oABfqtAwmB0YCep.jpg", rating: "8.7", isNew: false },
-{ id: 225, title: `Trái Tim Quái Vật`, image: "https://image.tmdb.org/t/p/w500/7wY6QzqRYIOPfOTl1CskFYHP7RE.jpg", rating: "3.0", isNew: false },
-{ id: 226, title: `Nhà Bà Nữ`, image: "https://image.tmdb.org/t/p/w500/aGFWJOyUMq2EMtisNZCM2chXf8p.jpg", rating: "5.8", isNew: false },
-{ id: 227, title: `Mùi Đu Đủ Xanh`, image: "https://image.tmdb.org/t/p/w500/p9lJFQ54IiNqN4fcmn5JxXdqQtR.jpg", rating: "7.0", isNew: false },
-{ id: 228, title: `Xích Lô`, image: "https://image.tmdb.org/t/p/w500/mdOsnSVTLwHMEH1juOLMiwXcO5o.jpg", rating: "7.0", isNew: false },
-{ id: 229, title: `Báu Vật Trời Cho`, image: "https://image.tmdb.org/t/p/w500/mnOMG35LRwN9w0W1FD2MQI9X6zx.jpg", rating: "6.0", isNew: false },
-{ id: 232, title: `Quỷ Huyết`, image: "https://image.tmdb.org/t/p/w500/1c5XWuA9ETEUZcMAF1ngk0kBNEh.jpg", rating: "7.5", isNew: false },
-{ id: 233, title: `Quán Trọ Kỳ Nam`, image: "https://image.tmdb.org/t/p/w500/6Av8MS7I5K251bMofglA9Qv2Xaa.jpg", rating: "7.5", isNew: false },
-{ id: 234, title: `Con Ma Nhà Họ Hứa`, image: "https://image.tmdb.org/t/p/w500/nNWl7tRoHDW2PpfEDr6weAa675i.jpg", rating: "8.6", isNew: false },
-{ id: 235, title: `Bến Phà Xác Sống`, image: "https://image.tmdb.org/t/p/w500/bnlYmSzp9Uh0ZPPyDj26XwAaVH2.jpg", rating: "7.0", isNew: false },
-{ id: 236, title: `Mõm Đỏ`, image: "https://image.tmdb.org/t/p/w500/bm2JMrOq8cUlA287CZ1vCyRPeSH.jpg", rating: "4.7", isNew: false },
-{ id: 237, title: `Gái Già Lắm Chiêu`, image: "https://image.tmdb.org/t/p/w500/5RIUCFKFXifRX2xcVPRJX2eLqM4.jpg", rating: "5.0", isNew: false },
-{ id: 238, title: `Cô Ba Sài Gòn`, image: "https://image.tmdb.org/t/p/w500/9QfL4NmXxkNPevs7htzfPwAmvoa.jpg", rating: "6.1", isNew: false },
-{ id: 239, title: `Để Mai Tính 2`, image: "https://image.tmdb.org/t/p/w500/lkALlAuDv5Hmsh9vyW6b4Xftsau.jpg", rating: "7.4", isNew: false },
-{ id: 242, title: `Thiên Thần Hộ Mệnh`, image: "https://image.tmdb.org/t/p/w500/oLpOpsZx8DJxlwNjjdROtuzHfXp.jpg", rating: "6.5", isNew: false },
-{ id: 243, title: `Chuyến Bay Bão Táp`, image: "https://image.tmdb.org/t/p/w500/y0t53XosZnJ5wjiORvZqobZPmJF.jpg", rating: "6.3", isNew: false },
-{ id: 244, title: `Cô Hầu Gái`, image: "https://image.tmdb.org/t/p/w500/5sYJDnC2iN1zcVfoqIkPtufV4L4.jpg", rating: "5.9", isNew: false },
-{ id: 245, title: `Thám Tử Kiên`, image: "https://image.tmdb.org/t/p/w500/sTW271wUWjbvRXPqD9xexnLAvnl.jpg", rating: "7.8", isNew: false },
-{ id: 246, title: `Hoa Hồng Đen`, image: "https://image.tmdb.org/t/p/w500/r08WvIDBbosBvymZQyvQypYdbjK.jpg", rating: "5.0", isNew: false },
-{ id: 247, title: `Việt Yêu Dấu`, image: "https://image.tmdb.org/t/p/w500/uX3RSsb1Wp3Su9snqMD0EEIadHJ.jpg", rating: "7.7", isNew: false },
-{ id: 248, title: `578: Phát Đạn Của Kẻ Điên`, image: "https://image.tmdb.org/t/p/w500/8Nw5v7wPfa2FwbKyx61K2nIBcKa.jpg", rating: "6.0", isNew: false },
-{ id: 249, title: `Việt và Nam`, image: "https://image.tmdb.org/t/p/w500/axtvB6qoORMZQ2qPZdaFcBOM8g3.jpg", rating: "7.0", isNew: true },
-{ id: 252, title: `Quỷ Nhập Tràng`, image: "https://img.ophim.live/uploads/movies/quy-nhap-trang-poster.jpg", rating: "5.0", isNew: true },
-{ id: 253, title: `Trái Tim Tội Lỗi`, image: "https://image.tmdb.org/t/p/w500/z8LNpP0fd5NTSFi4i1M30dzLHiQ.jpg", rating: "6.0", isNew: false },
-{ id: 254, title: `Nơi Bắt Đầu`, image: "https://image.tmdb.org/t/p/w500/qxQEzKp5WI5Ra9joAt4KVv4LdM7.jpg", rating: "8.7", isNew: false },
-{ id: 255, title: `Người Cộng Sự`, image: "https://image.tmdb.org/t/p/w500/fQVqjqZtvQORnOB4uR0QVXkTqFQ.jpg", rating: "8.2", isNew: false },
-{ id: 256, title: `Bản Sao Nghịch Giới`, image: "https://image.tmdb.org/t/p/w500/xYDG2xUS5WRG4PURJh5bxIO6dYI.jpg", rating: "7.0", isNew: false },
-{ id: 257, title: `Đoạt Hồn`, image: "https://image.tmdb.org/t/p/w500/cefUKWm7mNPodfUVkTzpLz1HQKk.jpg", rating: "7.4", isNew: false },
-{ id: 258, title: `Siêu Cấp Anh Hùng`, image: "https://image.tmdb.org/t/p/w500/gDc2FCkTFfUg7MWpp7zm0D0b48h.jpg", rating: "8.0", isNew: false },
+      { id: 212, title: `Chị Chị Em Em 2`, image: "https://image.tmdb.org/t/p/w500/qMD2zbQy7fl4J8BZpdYcCWtjp1S.jpg", rating: "7.0", isNew: false },
+      { id: 213, title: `Bẫy Rồng`, image: "https://image.tmdb.org/t/p/w500/LwAmk0IFyZYxfmD0TH8GKZyzGZ.jpg", rating: "5.0", isNew: false },
+      { id: 214, title: `Lửa Phật`, image: "https://image.tmdb.org/t/p/w500/o4oAN2nsMnwVHbjPjKN8pcDsR2b.jpg", rating: "5.6", isNew: false },
+      { id: 215, title: `Hoàng Tử Quỷ`, image: "https://image.tmdb.org/t/p/w500/pX8kCc2ZP82rAZ8IwDsdun1FCAD.jpg", rating: "8.8", isNew: false },
+      { id: 216, title: `Hạnh Phúc Của Mẹ`, image: "https://image.tmdb.org/t/p/w500/bKsXUfvljPjYfytKcjw5FbRHT09.jpg", rating: "8.4", isNew: false },
+      { id: 217, title: `Phim Hồng`, image: "https://image.tmdb.org/t/p/w500/7dHiq9so6XkeyMX2bESUya9T5ZB.jpg", rating: "8.6", isNew: false },
+      { id: 218, title: `Em Chưa 18`, image: "https://image.tmdb.org/t/p/w500/phXbIGRmNZduZwnBjC0dBZfn8lr.jpg", rating: "6.6", isNew: false },
+      { id: 219, title: `Lật Mặt 7: Một Điều Ước`, image: "https://image.tmdb.org/t/p/w500/aSPg7viRKZUp6py0VLVTv6mo3GN.jpg", rating: "7.3", isNew: true },
+      { id: 222, title: `Làng Địa Ngục`, image: "https://image.tmdb.org/t/p/w500/jt31qZw5W1RFXfGyTJCpgjvq2h1.jpg", rating: "5.1", isNew: false },
+      { id: 223, title: `Bi, Đừng Sợ`, image: "https://image.tmdb.org/t/p/w500/lotXs0yvfPvhFCVXjnUsxLLMC2h.jpg", rating: "5.3", isNew: false },
+      { id: 224, title: `Nước, Giấy, Tóc...`, image: "https://image.tmdb.org/t/p/w500/4z2v3v2v4y54oABfqtAwmB0YCep.jpg", rating: "8.7", isNew: false },
+      { id: 225, title: `Trái Tim Quái Vật`, image: "https://image.tmdb.org/t/p/w500/7wY6QzqRYIOPfOTl1CskFYHP7RE.jpg", rating: "3.0", isNew: false },
+      { id: 226, title: `Nhà Bà Nữ`, image: "https://image.tmdb.org/t/p/w500/aGFWJOyUMq2EMtisNZCM2chXf8p.jpg", rating: "5.8", isNew: false },
+      { id: 227, title: `Mùi Đu Đủ Xanh`, image: "https://image.tmdb.org/t/p/w500/p9lJFQ54IiNqN4fcmn5JxXdqQtR.jpg", rating: "7.0", isNew: false },
+      { id: 228, title: `Xích Lô`, image: "https://image.tmdb.org/t/p/w500/mdOsnSVTLwHMEH1juOLMiwXcO5o.jpg", rating: "7.0", isNew: false },
+      { id: 229, title: `Báu Vật Trời Cho`, image: "https://image.tmdb.org/t/p/w500/mnOMG35LRwN9w0W1FD2MQI9X6zx.jpg", rating: "6.0", isNew: false },
+      { id: 232, title: `Quỷ Huyết`, image: "https://image.tmdb.org/t/p/w500/1c5XWuA9ETEUZcMAF1ngk0kBNEh.jpg", rating: "7.5", isNew: false },
+      { id: 233, title: `Quán Trọ Kỳ Nam`, image: "https://image.tmdb.org/t/p/w500/6Av8MS7I5K251bMofglA9Qv2Xaa.jpg", rating: "7.5", isNew: false },
+      { id: 234, title: `Con Ma Nhà Họ Hứa`, image: "https://image.tmdb.org/t/p/w500/nNWl7tRoHDW2PpfEDr6weAa675i.jpg", rating: "8.6", isNew: false },
+      { id: 235, title: `Bến Phà Xác Sống`, image: "https://image.tmdb.org/t/p/w500/bnlYmSzp9Uh0ZPPyDj26XwAaVH2.jpg", rating: "7.0", isNew: false },
+      { id: 236, title: `Mõm Đỏ`, image: "https://image.tmdb.org/t/p/w500/bm2JMrOq8cUlA287CZ1vCyRPeSH.jpg", rating: "4.7", isNew: false },
+      { id: 237, title: `Gái Già Lắm Chiêu`, image: "https://image.tmdb.org/t/p/w500/5RIUCFKFXifRX2xcVPRJX2eLqM4.jpg", rating: "5.0", isNew: false },
+      { id: 238, title: `Cô Ba Sài Gòn`, image: "https://image.tmdb.org/t/p/w500/9QfL4NmXxkNPevs7htzfPwAmvoa.jpg", rating: "6.1", isNew: false },
+      { id: 239, title: `Để Mai Tính 2`, image: "https://image.tmdb.org/t/p/w500/lkALlAuDv5Hmsh9vyW6b4Xftsau.jpg", rating: "7.4", isNew: false },
+      { id: 242, title: `Thiên Thần Hộ Mệnh`, image: "https://image.tmdb.org/t/p/w500/oLpOpsZx8DJxlwNjjdROtuzHfXp.jpg", rating: "6.5", isNew: false },
+      { id: 243, title: `Chuyến Bay Bão Táp`, image: "https://image.tmdb.org/t/p/w500/y0t53XosZnJ5wjiORvZqobZPmJF.jpg", rating: "6.3", isNew: false },
+      { id: 244, title: `Cô Hầu Gái`, image: "https://image.tmdb.org/t/p/w500/5sYJDnC2iN1zcVfoqIkPtufV4L4.jpg", rating: "5.9", isNew: false },
+      { id: 245, title: `Thám Tử Kiên`, image: "https://image.tmdb.org/t/p/w500/sTW271wUWjbvRXPqD9xexnLAvnl.jpg", rating: "7.8", isNew: false },
+      { id: 246, title: `Hoa Hồng Đen`, image: "https://image.tmdb.org/t/p/w500/r08WvIDBbosBvymZQyvQypYdbjK.jpg", rating: "5.0", isNew: false },
+      { id: 247, title: `Việt Yêu Dấu`, image: "https://image.tmdb.org/t/p/w500/uX3RSsb1Wp3Su9snqMD0EEIadHJ.jpg", rating: "7.7", isNew: false },
+      { id: 248, title: `578: Phát Đạn Của Kẻ Điên`, image: "https://image.tmdb.org/t/p/w500/8Nw5v7wPfa2FwbKyx61K2nIBcKa.jpg", rating: "6.0", isNew: false },
+      { id: 249, title: `Việt và Nam`, image: "https://image.tmdb.org/t/p/w500/axtvB6qoORMZQ2qPZdaFcBOM8g3.jpg", rating: "7.0", isNew: true },
+      { id: 252, title: `Quỷ Nhập Tràng`, image: "https://img.ophim.live/uploads/movies/quy-nhap-trang-poster.jpg", rating: "5.0", isNew: true },
+      { id: 253, title: `Trái Tim Tội Lỗi`, image: "https://image.tmdb.org/t/p/w500/z8LNpP0fd5NTSFi4i1M30dzLHiQ.jpg", rating: "6.0", isNew: false },
+      { id: 254, title: `Nơi Bắt Đầu`, image: "https://image.tmdb.org/t/p/w500/qxQEzKp5WI5Ra9joAt4KVv4LdM7.jpg", rating: "8.7", isNew: false },
+      { id: 255, title: `Người Cộng Sự`, image: "https://image.tmdb.org/t/p/w500/fQVqjqZtvQORnOB4uR0QVXkTqFQ.jpg", rating: "8.2", isNew: false },
+      { id: 256, title: `Bản Sao Nghịch Giới`, image: "https://image.tmdb.org/t/p/w500/xYDG2xUS5WRG4PURJh5bxIO6dYI.jpg", rating: "7.0", isNew: false },
+      { id: 257, title: `Đoạt Hồn`, image: "https://image.tmdb.org/t/p/w500/cefUKWm7mNPodfUVkTzpLz1HQKk.jpg", rating: "7.4", isNew: false },
+      { id: 258, title: `Siêu Cấp Anh Hùng`, image: "https://image.tmdb.org/t/p/w500/gDc2FCkTFfUg7MWpp7zm0D0b48h.jpg", rating: "8.0", isNew: false },
     ];
   } else if (title === 'Phim Hành Động') {
     movies = [
@@ -184,36 +234,32 @@ const CategoryPage = ({ title }) => {
     ];
   } else if (title === 'Truyền hình') {
     movies = [
-      { id: 900, title: "VTV1", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/VTV1_logo_2013.svg/512px-VTV1_logo_2013.svg.png", rating: "LIVE", isNew: true },
-      { id: 901, title: "VTV2", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/VTV2_logo_2013.svg/512px-VTV2_logo_2013.svg.png", rating: "LIVE", isNew: false },
-      { id: 902, title: "VTV3", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/VTV3_logo_2013.svg/512px-VTV3_logo_2013.svg.png", rating: "LIVE", isNew: true },
-      { id: 903, title: "VTV4", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/VTV4_logo_2013.svg/512px-VTV4_logo_2013.svg.png", rating: "LIVE", isNew: false },
-      { id: 904, title: "VTV5", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/VTV5_logo_2013.svg/512px-VTV5_logo_2013.svg.png", rating: "LIVE", isNew: false },
-      { id: 906, title: "VTV7", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/VTV7_logo_2015.svg/512px-VTV7_logo_2015.svg.png", rating: "LIVE", isNew: false },
-      { id: 907, title: "VTV8", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/VTV8_logo_2016.svg/512px-VTV8_logo_2016.svg.png", rating: "LIVE", isNew: false },
-      { id: 908, title: "VTV9", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/VTV9_logo_2013.svg/512px-VTV9_logo_2013.svg.png", rating: "LIVE", isNew: false }
+      { id: "sat-thu-john-wick", title: "Sát Thủ John Wick", image: "https://img.ophim.live/uploads/movies/sat-thu-john-wick-poster.jpg", rating: "7.4", isNew: false },
+      { id: "sat-thu-john-wick-2", title: "Sát Thủ John Wick 2", image: "https://img.ophim.live/uploads/movies/sat-thu-john-wick-2-poster.jpg", rating: "7.3", isNew: false },
+      { id: "sat-thu-john-wick-3-chuan-bi-chien-tranh", title: "Sát Thủ John Wick 3", image: "https://img.ophim.live/uploads/movies/sat-thu-john-wick-3-chuan-bi-chien-tranh-poster.jpg", rating: "7.4", isNew: false },
+      { id: "sat-thu-john-wick-phan-4", title: "Sát Thủ John Wick 4", image: "https://img.ophim.live/uploads/movies/sat-thu-john-wick-phan-4-poster.jpg", rating: "7.8", isNew: false },
+      { id: "khach-san-continental-tu-the-gioi-cua-john-wick", title: "Khách Sạn Continental", image: "https://img.ophim.live/uploads/movies/khach-san-continental-tu-the-gioi-cua-john-wick-poster.jpg", rating: "7.5", isNew: true },
+      { id: "tu-vu-tru-john-wick-ballerina", title: "Ballerina", image: "https://img.ophim.live/uploads/movies/tu-vu-tru-john-wick-ballerina-poster.jpg", rating: "NR", isNew: true }
     ];
   } else if (title === 'HBO GO') {
     movies = [
-      { id: 301, title: "Game of Thrones", image: "https://m.media-amazon.com/images/M/MV5BN2IzYzBiM2RoXkEyXkFqcGdeQXVyNDg4NjY5OTQ@._V1_FMjpg_UX1000_.jpg", rating: "9.3", isNew: false },
-      { id: 302, title: "House of the Dragon", image: "https://m.media-amazon.com/images/M/MV5BMTAxNDEwODItMjk0NC00MThmLThjOGQtMzQ4MzRlYWY1OWRjXkEyXkFqcGdeQXVyMTEyMjM2NDc2._V1_FMjpg_UX1000_.jpg", rating: "8.5", isNew: true },
-      { id: 303, title: "The Last of Us", image: "https://m.media-amazon.com/images/M/MV5BZGUzYTI3M2EtZmM0Yy00NGUyLWI4ODEtN2Q3ZGJlYzhhZjU3XkEyXkFqcGdeQXVyNTM0OTY1OQ@@._V1_FMjpg_UX1000_.jpg", rating: "8.8", isNew: false },
-      { id: 304, title: "Succession", image: "https://m.media-amazon.com/images/M/MV5BZTA0NWQ2NTgtOGNkZC00NzViLTgxOTctMWM1OTNiYTQ0ZTY2XkEyXkFqcGdeQXVyMTEyMjM2NDc2._V1_FMjpg_UX1000_.jpg", rating: "8.9", isNew: false },
-      { id: 305, title: "Euphoria", image: "https://m.media-amazon.com/images/M/MV5BODg1N2Y4MWYtMGI3OS00MTQ2LWE1NGEtZDVkYjAyMDNlZTJiXkEyXkFqcGdeQXVyMTEyMjM2NDc2._V1_FMjpg_UX1000_.jpg", rating: "8.3", isNew: false },
-      { id: 306, title: "True Detective", image: "https://m.media-amazon.com/images/M/MV5BNWRjMDMxN2EtNTM1NS00ZTIwLTgyOWItMDMzMDgyZjExYTdiXkEyXkFqcGdeQXVyMTEyMjM2NDc2._V1_FMjpg_UX1000_.jpg", rating: "8.9", isNew: false },
-      { id: 307, title: "Chernobyl", image: "https://m.media-amazon.com/images/M/MV5BZGQ2YmMxZmEtYjI5OS00NzllLWI0N2YtNTMwNTJhMTgwNjdiXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_FMjpg_UX1000_.jpg", rating: "9.4", isNew: false },
-      { id: 308, title: "The Sopranos", image: "https://m.media-amazon.com/images/M/MV5BZGJjYzhjYTYtMDBjYy00OWU1LTg5OTYtNmYwOTZmZjE3ZDdhXkEyXkFqcGdeQXVyNTAyODkwOQ@@._V1_FMjpg_UX1000_.jpg", rating: "9.2", isNew: false },
+      { id: "thanh-guom-diet-quy-asakusa", title: "Movie: Huyết Quỷ Asakusa", image: "https://img.ophim.live/uploads/movies/thanh-guom-diet-quy-asakusa-poster.jpg", rating: "8.5", isNew: false },
+      { id: "thanh-guom-diet-quy-dinh-thu-tsuzumi", title: "Movie: Dinh Thự Tsuzumi", image: "https://img.ophim.live/uploads/movies/thanh-guom-diet-quy-dinh-thu-tsuzumi-poster.jpg", rating: "8.4", isNew: false },
+      { id: "thanh-guom-diet-quy-nui-nhen-nada", title: "Movie: Núi Nhện Nada", image: "https://img.ophim.live/uploads/movies/thanh-guom-diet-quy-nui-nhen-nada-poster.jpg", rating: "8.8", isNew: false },
+      { id: "thanh-guom-diet-quy-hoi-nghi-tru-cot-dinh-thu-buom-buom", title: "Movie: Hội Nghị Trụ Cột", image: "https://img.ophim.live/uploads/movies/thanh-guom-diet-quy-hoi-nghi-tru-cot-dinh-thu-buom-buom-poster.jpg", rating: "8.7", isNew: false },
+      { id: "thanh-guom-diet-quy-chuyen-tau-vo-tan", title: "Movie: Chuyến Tàu Vô Tận", image: "https://img.ophim.live/uploads/movies/thanh-guom-diet-quy-chuyen-tau-vo-tan-poster.jpg", rating: "8.9", isNew: false },
+      { id: "thanh-guom-diet-quy-vo-han-thanh", title: "Movie: Vô Hạn Thành", image: "https://img.ophim.live/uploads/movies/thanh-guom-diet-quy-vo-han-thanh-poster.jpg", rating: "NR", isNew: true },
     ];
   } else if (title === 'Thiếu nhi') {
     movies = [
-      { id: 401, title: "Doraemon", image: "https://m.media-amazon.com/images/M/MV5BODA0ZWY0NzctMzUxNi00ZWQ5LTk4ZjctMmEyNGUyYzQ1MzI5XkEyXkFqcGdeQXVyNjExODE1MDc@._V1_FMjpg_UX1000_.jpg", rating: "8.1", isNew: false },
-      { id: 402, title: "Detective Conan", image: "https://m.media-amazon.com/images/M/MV5BYzA2ZDk1NDItODljMy00MjAxLTg3NWYtNWFiYTZmMmZmNDRhXkEyXkFqcGdeQXVyNzgxMzc3OTc@._V1_FMjpg_UX1000_.jpg", rating: "8.5", isNew: false },
-      { id: 403, title: "Pokémon", image: "https://m.media-amazon.com/images/M/MV5BMGNiM2YyMTItMTRlYS00MGQ3LTgzZWItOTdmMzEwZjM4NTNmXkEyXkFqcGdeQXVyNjk1Njg5NTA@._V1_FMjpg_UX1000_.jpg", rating: "7.5", isNew: true },
-      { id: 404, title: "Ben 10", image: "https://m.media-amazon.com/images/M/MV5BOTE3ZDg1YTctZWViNC00OTc0LTlmNDAtODc1ODg4OWFiZjYyXkEyXkFqcGdeQXVyMTA1NjE5MTAz._V1_FMjpg_UX1000_.jpg", rating: "7.4", isNew: false },
-      { id: 405, title: "Tom and Jerry", image: "https://m.media-amazon.com/images/M/MV5BZTNlMzNjMzQtOWM2OC00MDMwLTk3OTQtMTdhODMwOGE5YjcxXkEyXkFqcGdeQXVyNjc1NzgwNjY@._V1_FMjpg_UX1000_.jpg", rating: "8.5", isNew: false },
-      { id: 406, title: "Peppa Pig", image: "https://m.media-amazon.com/images/M/MV5BMTQwMDMwODAxN15BMl5BanBnXkFtZTgwNTU0NDI2NjM@._V1_FMjpg_UX1000_.jpg", rating: "6.2", isNew: false },
-      { id: 407, title: "SpongeBob SquarePants", image: "https://m.media-amazon.com/images/M/MV5BMGUzYjUzZDgtNzgwZi00MGIzLTg5OGYtN2IyYWMyNTBjNTUzXkEyXkFqcGdeQXVyNTgzNjAxMTg@._V1_FMjpg_UX1000_.jpg", rating: "8.2", isNew: false },
-      { id: 408, title: "Avatar: The Last Airbender", image: "https://m.media-amazon.com/images/M/MV5BODc5YTBhMTItMjhkNi00ZTIxLWI0YjAtNTZmOTY0YjRlZGQ0XkEyXkFqcGdeQXVyODUwNjEzMzg@._V1_FMjpg_UX1000_.jpg", rating: "9.3", isNew: false },
+      { id: "doraemon-doi-ban-than", title: "Doraemon: Đôi Bạn Thân", image: "https://img.ophim.live/uploads/movies/doraemon-doi-ban-than-poster.jpg", rating: "7.4", isNew: false },
+      { id: "doraemon-doi-ban-than-2", title: "Doraemon: Đôi Bạn Thân 2", image: "https://img.ophim.live/uploads/movies/doraemon-doi-ban-than-2-poster.jpg", rating: "7.5", isNew: false },
+      { id: "doraemon-nobita-va-nhung-hiep-si-khong-gian", title: "Nobita Và Hiệp Sĩ Không Gian", image: "https://img.ophim.live/uploads/movies/doraemon-nobita-va-nhung-hiep-si-khong-gian-poster.jpg", rating: "6.8", isNew: false },
+      { id: "doraemon-nobita-va-nhung-ban-khung-long-moi", title: "Nobita Và Những Bạn Khủng Long Mới", image: "https://img.ophim.live/uploads/movies/doraemon-nobita-va-nhung-ban-khung-long-moi-poster.jpg", rating: "7.1", isNew: false },
+      { id: "doraemon-nobita-va-cuoc-chien-vu-tru-ti-hon", title: "Nobita Và Cuộc Chiến Vũ Trụ Tí Hon", image: "https://img.ophim.live/uploads/movies/doraemon-nobita-va-cuoc-chien-vu-tru-ti-hon-poster.jpg", rating: "6.9", isNew: false },
+      { id: "doraemon-nobita-va-vung-dat-ly-tuong-tren-bau-troi", title: "Nobita Và Vùng Đất Lý Tưởng", image: "https://img.ophim.live/uploads/movies/doraemon-nobita-va-vung-dat-ly-tuong-tren-bau-troi-poster.jpg", rating: "7.3", isNew: true },
+      { id: "doraemon-nobita-va-binh-doan-nguoi-sat", title: "Nobita Và Binh Đoàn Người Sắt", image: "https://img.ophim.live/uploads/movies/doraemon-nobita-va-binh-doan-nguoi-sat-poster.jpg", rating: "8.0", isNew: false },
+      { id: "doraemon-nobita-va-cuoc-dai-thuy-chien-o-xu-so-nguoi-ca", title: "Đại Thủy Chiến Người Cá", image: "https://img.ophim.live/uploads/movies/doraemon-nobita-va-cuoc-dai-thuy-chien-o-xu-so-nguoi-ca-poster.jpg", rating: "7.8", isNew: false },
     ];
   } else {
     // If it's Phim Xu Hướng, don't show the generic movies grid if we don't want to
@@ -275,7 +321,8 @@ const CategoryPage = ({ title }) => {
   if (title === 'Phim Xu Hướng') {
     const data = attackOnTitanData;
     return (
-      <div className="home-container" style={{ padding: '100px 3rem 2rem 3rem', minHeight: '100vh', background: '#000' }}>
+      <div className="home-container" style={{ padding: '100px 3rem 2rem 3rem', minHeight: '100vh', background: 'transparent', position: 'relative', zIndex: 1 }}>
+        {videoBg}
 
         <div style={{ marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <h1 style={{ fontSize: '2.5rem', fontWeight: '800' }}>Top Trend</h1>
@@ -448,109 +495,109 @@ const CategoryPage = ({ title }) => {
                               </div>
                             </div>
                           </div>
-                                </Link>
+                        </Link>
                       ))}
                     </div>
                   </div>
                 ))}
               </div>
             )}
-                    {/* Inline modal for quick play (prevents full-page provider redirect) */}
-                    {modalOpen && (
-                      <div className="embed-modal-backdrop" onClick={() => { setModalOpen(false); setModalPlaying(false); }}>
-                        <div
-                          className="embed-modal-content"
-                          onClick={(e) => e.stopPropagation()}
-                          onMouseMove={() => {
-                            setModalControlsVisible(true);
-                            if (controlsTimerRef.current) clearTimeout(controlsTimerRef.current);
-                            controlsTimerRef.current = setTimeout(() => setModalControlsVisible(false), 2500);
-                          }}
-                        >
-                          <button className="embed-modal-close" onClick={() => { setModalOpen(false); setModalPlaying(false); }}>✕</button>
-                          <div style={{ position: 'absolute', left: 16, top: 16, zIndex: 1011, color: '#fff' }}>
-                            <div style={{ fontSize: '18px', fontWeight: 800 }}>{data.name}</div>
-                            <div style={{ fontSize: '14px', opacity: 0.9, marginTop: 6 }}>S{expandedSeason} • {`Episode ${modalSrc.split('/').pop()}`}</div>
-                            <div style={{ marginTop: 8, maxWidth: 480, color: '#ddd', fontSize: 13 }}>
-                              {(() => {
-                                try {
-                                  const parts = modalSrc.split('/');
-                                  const epNum = parts[parts.length - 1] || '';
-                                  const seasonNum = parts[parts.length - 2] || '';
-                                  const season = data.seasons.find(s => String(s.season_number) === String(seasonNum));
-                                  const ep = season ? season.episodes.find(e => String(e.episode_number) === String(epNum)) : null;
-                                  return ep ? ep.name : 'Play episode in modal or open full player page for more details.';
-                                } catch (err) {
-                                  return 'Play episode in modal or open full player page for more details.';
-                                }
-                              })()}
-                            </div>
-                            <div style={{ marginTop: 10, display: 'flex', gap: 8 }}>
-                              <button
-                                onClick={() => {
-                                  // Play in modal by adding autoplay param (provider may honor it)
-                                  const autoplaySrc = modalSrc.includes('?') ? `${modalSrc}&autoplay=1` : `${modalSrc}?autoplay=1`;
-                                  setModalSrc(autoplaySrc);
-                                  setModalPlaying(true);
-                                }}
-                                style={{ background: '#00d8ff', border: 'none', color: '#000', padding: '8px 12px', borderRadius: 6, fontWeight: 700, cursor: 'pointer' }}
-                              >Play in Modal</button>
-                              <button
-                                onClick={() => {
-                                  // navigate to full watch page
-                                  // derive season/episode from modalSrc
-                                  try {
-                                    const parts = modalSrc.split('/');
-                                    const epNum = parts[parts.length - 1] || '';
-                                    const seasonNum = parts[parts.length - 2] || '';
-                                    navigate(`/watch/aot-s${seasonNum}-ep${epNum}`);
-                                    setModalOpen(false);
-                                  } catch (err) {
-                                    navigate('/');
-                                  }
-                                }}
-                                style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.12)', color: '#fff', padding: '8px 12px', borderRadius: 6, fontWeight: 700, cursor: 'pointer' }}
-                              >Open Full Player</button>
-                            </div>
-                          </div>
+            {/* Inline modal for quick play (prevents full-page provider redirect) */}
+            {modalOpen && (
+              <div className="embed-modal-backdrop" onClick={() => { setModalOpen(false); setModalPlaying(false); }}>
+                <div
+                  className="embed-modal-content"
+                  onClick={(e) => e.stopPropagation()}
+                  onMouseMove={() => {
+                    setModalControlsVisible(true);
+                    if (controlsTimerRef.current) clearTimeout(controlsTimerRef.current);
+                    controlsTimerRef.current = setTimeout(() => setModalControlsVisible(false), 2500);
+                  }}
+                >
+                  <button className="embed-modal-close" onClick={() => { setModalOpen(false); setModalPlaying(false); }}>✕</button>
+                  <div style={{ position: 'absolute', left: 16, top: 16, zIndex: 1011, color: '#fff' }}>
+                    <div style={{ fontSize: '18px', fontWeight: 800 }}>{data.name}</div>
+                    <div style={{ fontSize: '14px', opacity: 0.9, marginTop: 6 }}>S{expandedSeason} • {`Episode ${modalSrc.split('/').pop()}`}</div>
+                    <div style={{ marginTop: 8, maxWidth: 480, color: '#ddd', fontSize: 13 }}>
+                      {(() => {
+                        try {
+                          const parts = modalSrc.split('/');
+                          const epNum = parts[parts.length - 1] || '';
+                          const seasonNum = parts[parts.length - 2] || '';
+                          const season = data.seasons.find(s => String(s.season_number) === String(seasonNum));
+                          const ep = season ? season.episodes.find(e => String(e.episode_number) === String(epNum)) : null;
+                          return ep ? ep.name : 'Play episode in modal or open full player page for more details.';
+                        } catch (err) {
+                          return 'Play episode in modal or open full player page for more details.';
+                        }
+                      })()}
+                    </div>
+                    <div style={{ marginTop: 10, display: 'flex', gap: 8 }}>
+                      <button
+                        onClick={() => {
+                          // Play in modal by adding autoplay param (provider may honor it)
+                          const autoplaySrc = modalSrc.includes('?') ? `${modalSrc}&autoplay=1` : `${modalSrc}?autoplay=1`;
+                          setModalSrc(autoplaySrc);
+                          setModalPlaying(true);
+                        }}
+                        style={{ background: '#00d8ff', border: 'none', color: '#000', padding: '8px 12px', borderRadius: 6, fontWeight: 700, cursor: 'pointer' }}
+                      >Play in Modal</button>
+                      <button
+                        onClick={() => {
+                          // navigate to full watch page
+                          // derive season/episode from modalSrc
+                          try {
+                            const parts = modalSrc.split('/');
+                            const epNum = parts[parts.length - 1] || '';
+                            const seasonNum = parts[parts.length - 2] || '';
+                            navigate(`/watch/aot-s${seasonNum}-ep${epNum}`);
+                            setModalOpen(false);
+                          } catch (err) {
+                            navigate('/');
+                          }
+                        }}
+                        style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.12)', color: '#fff', padding: '8px 12px', borderRadius: 6, fontWeight: 700, cursor: 'pointer' }}
+                      >Open Full Player</button>
+                    </div>
+                  </div>
 
-                          {/* Controls overlay (visual only for iframe embeds) */}
-                          <div className={`embed-modal-controls ${modalControlsVisible ? 'visible' : ''}`}>
-                            <button className="embed-control-play" onClick={() => {
-                              if (modalPlaying) {
-                                // try to stop autoplay by removing param
-                                const base = modalSrc.split('?')[0];
-                                setModalSrc(base);
-                                setModalPlaying(false);
-                              } else {
-                                const autoplaySrc = modalSrc.includes('?') ? `${modalSrc}&autoplay=1` : `${modalSrc}?autoplay=1`;
-                                setModalSrc(autoplaySrc);
-                                setModalPlaying(true);
-                              }
-                            }}>{modalPlaying ? '❚❚' : '►'}</button>
-                            <div className="modal-progress" onClick={(e) => {
-                              // visual only: compute clicked percentage and reflect in UI
-                              const rect = e.currentTarget.getBoundingClientRect();
-                              const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-                              const fill = e.currentTarget.querySelector('.modal-progress-fill');
-                              if (fill) fill.style.width = `${pct * 100}%`;
-                            }}>
-                              <div className="modal-progress-fill" style={{ width: modalPlaying ? '40%' : '0%' }} />
-                            </div>
-                          </div>
+                  {/* Controls overlay (visual only for iframe embeds) */}
+                  <div className={`embed-modal-controls ${modalControlsVisible ? 'visible' : ''}`}>
+                    <button className="embed-control-play" onClick={() => {
+                      if (modalPlaying) {
+                        // try to stop autoplay by removing param
+                        const base = modalSrc.split('?')[0];
+                        setModalSrc(base);
+                        setModalPlaying(false);
+                      } else {
+                        const autoplaySrc = modalSrc.includes('?') ? `${modalSrc}&autoplay=1` : `${modalSrc}?autoplay=1`;
+                        setModalSrc(autoplaySrc);
+                        setModalPlaying(true);
+                      }
+                    }}>{modalPlaying ? '❚❚' : '►'}</button>
+                    <div className="modal-progress" onClick={(e) => {
+                      // visual only: compute clicked percentage and reflect in UI
+                      const rect = e.currentTarget.getBoundingClientRect();
+                      const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+                      const fill = e.currentTarget.querySelector('.modal-progress-fill');
+                      if (fill) fill.style.width = `${pct * 100}%`;
+                    }}>
+                      <div className="modal-progress-fill" style={{ width: modalPlaying ? '40%' : '0%' }} />
+                    </div>
+                  </div>
 
-                          <iframe
-                            className="embed-modal-iframe"
-                            src={modalPlaying ? modalSrc : modalSrc}
-                            frameBorder="0"
-                            allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
-                            allowFullScreen
-                            sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-presentation"
-                            title="Quick Player"
-                          />
-                        </div>
-                      </div>
-                    )}
+                  <iframe
+                    className="embed-modal-iframe"
+                    src={modalPlaying ? modalSrc : modalSrc}
+                    frameBorder="0"
+                    allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+                    allowFullScreen
+                    sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-presentation"
+                    title="Quick Player"
+                  />
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           <div style={{ color: '#fff' }}>Chưa có dữ liệu.</div>
@@ -561,7 +608,8 @@ const CategoryPage = ({ title }) => {
   }
 
   return (
-    <div className="home-container" style={{ padding: '100px 3rem 2rem 3rem', minHeight: '100vh', background: '#000' }}>
+    <div className="home-container" style={{ padding: '100px 3rem 2rem 3rem', minHeight: '100vh', background: 'transparent', position: 'relative', zIndex: 1 }}>
+      {videoBg}
 
       <div style={{ marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
         <h1 style={{ fontSize: '2.5rem', fontWeight: '800' }}>{title}</h1>

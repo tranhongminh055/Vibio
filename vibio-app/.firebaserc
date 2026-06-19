@@ -1,0 +1,11 @@
+{
+  "projects": {
+    "default": "vibio-6d50b"
+  },
+  "targets": {},
+  "etags": {
+    "vibio-6d50b": {
+      "extensionInstances": {}
+    }
+  }
+}

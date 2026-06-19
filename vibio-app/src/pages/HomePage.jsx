@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Home,
@@ -17,17 +17,48 @@ import {
   User,
   Settings,
   LogOut,
-  X
+  X,
+  Check,
+  Monitor,
+  Smartphone,
+  Laptop
 } from 'lucide-react';
 import './HomePage.css';
 
 const HomePage = () => {
-  const [isMuted, setIsMuted] = useState(true); /* Mặc định video sẽ tắt tiếng */
+  const [isMuted, setIsMuted] = useState(true);
+  const [showVipModal, setShowVipModal] = useState(false);
+  const [showPromoModal, setShowPromoModal] = useState(false);
+  const [showDeviceModal, setShowDeviceModal] = useState(false);
+  const [promoCode, setPromoCode] = useState('');
   const [scrolled, setScrolled] = useState(false); /* Trạng thái cuộn để thay đổi kiểu dáng navbar */
   const [showSearch, setShowSearch] = useState(false); /* Trạng thái hiển thị ô tìm kiếm */
   const [searchQuery, setSearchQuery] = useState(''); /* Giá trị của ô tìm kiếm */
   const [showNotifications, setShowNotifications] = useState(false); /* Trạng thái hiển thị menu thông báo */
   const [showProfileMenu, setShowProfileMenu] = useState(false); /* Trạng thái hiển thị menu profile */
+  const heroVideoRef = useRef(null);
+
+  /* Auto-unmute video khi user tương tác lần đầu */
+  useEffect(() => {
+    const unmute = () => {
+      if (heroVideoRef.current) {
+        heroVideoRef.current.muted = false;
+        setIsMuted(false);
+        heroVideoRef.current.play().catch(() => {});
+      }
+      document.removeEventListener('click', unmute);
+      document.removeEventListener('keydown', unmute);
+      document.removeEventListener('touchstart', unmute);
+    };
+    document.addEventListener('click', unmute, { once: true });
+    document.addEventListener('keydown', unmute, { once: true });
+    document.addEventListener('touchstart', unmute, { once: true });
+    return () => {
+      document.removeEventListener('click', unmute);
+      document.removeEventListener('keydown', unmute);
+      document.removeEventListener('touchstart', unmute);
+    };
+  }, []);
 
   useEffect(() => { /* Lắng nghe sự kiện cuộn để thay đổi trạng thái scrolled */
     const handleScroll = () => { /* Khi người dùng cuộn xuống hơn 50px, sẽ kích hoạt kiểu dáng scrolled cho navbar */
@@ -43,7 +74,10 @@ const HomePage = () => {
   }, []);
 
   const toggleMute = () => { /* ham chuyen doi trang thai am thanh khi nguoi dung bam nut mute/unmute */
-    setIsMuted(!isMuted); /* thiet lap lai gia trij nguoc lai cua isMuted (neu dang mute thi se unmute, neu dang unmute thi se mute) */
+    if (heroVideoRef.current) {
+      heroVideoRef.current.muted = !heroVideoRef.current.muted;
+      setIsMuted(heroVideoRef.current.muted);
+    }
   };
 
   return (
@@ -64,8 +98,8 @@ const HomePage = () => {
           </div>
 
           <div className="navbar-right">
-            <button className="vip-button">ĐẶC QUYỀN VIP</button>
-            <Link to="/enter-code" className="enter-code">Nhập mã VIBIO</Link>
+            <button className="vip-button" onClick={() => setShowVipModal(true)}>ĐẶC QUYỀN VIP</button>
+            <a href="#" className="enter-code" onClick={(e) => { e.preventDefault(); setShowPromoModal(true); }}>Nhập mã VIBIO</a>
 
             <div className="search-container">
               {showSearch && (
@@ -82,9 +116,35 @@ const HomePage = () => {
               <button className="icon-button" onClick={() => setShowSearch(!showSearch)}>
                 {showSearch ? <X size={20} /> : <Search size={20} />}
               </button>
+              {/* Search dropdown mockup */}
+              {showSearch && searchQuery && (
+                <div className="search-results-dropdown">
+                  <Link to="/watch/1" className="search-result-item">
+                    <img src="https://m.media-amazon.com/images/M/MV5BZmI1ZGRhNDYtOGVjZC00MmVhLThlZGEtYjliNTUzYjE3ZDIzXkEyXkFqcGdeQXVyMTUzMTg2ODkz._V1_FMjpg_UX1000_.jpg" className="search-result-img" alt="Resident Evil" />
+                    <div className="search-result-info">
+                      <h4>Resident Evil (2002)</h4>
+                      <p>Phim Hành Động • Zombie</p>
+                    </div>
+                  </Link>
+                  <Link to="/watch/sat-thu-john-wick" className="search-result-item">
+                    <img src="https://img.ophim.live/uploads/movies/sat-thu-john-wick-poster.jpg" className="search-result-img" alt="John Wick" />
+                    <div className="search-result-info">
+                      <h4>Sát Thủ John Wick</h4>
+                      <p>Phim Hành Động • Sát Thủ</p>
+                    </div>
+                  </Link>
+                  <Link to="/watch/cp-1" className="search-result-item">
+                    <img src="https://m.media-amazon.com/images/M/MV5BN2E2YmVmMjItNDRlNy00NzczLTgwMGEtYzA1MWNlODIzZWQ4XkEyXkFqcGdeQXVyMTUzMTg2ODkz._V1_FMjpg_UX1000_.jpg" className="search-result-img" alt="Cyberpunk" />
+                    <div className="search-result-info">
+                      <h4>Cyberpunk: Edgerunners</h4>
+                      <p>Phim Bộ • Anime</p>
+                    </div>
+                  </Link>
+                </div>
+              )}
             </div>
 
-            <button className="icon-button"><MonitorSmartphone size={20} /></button>
+            <button className="icon-button" onClick={() => setShowDeviceModal(true)}><MonitorSmartphone size={20} /></button>
 
             <div className="dropdown-container">
               <button
@@ -103,7 +163,7 @@ const HomePage = () => {
                   <div className="dropdown-item">
                     <div className="notification-dot"></div>
                     <div className="notification-text">
-                      <p>Tập mới của <strong>Resident Evil 9 Requieem</strong> đã có mặt!</p>
+                      <p>Phim <strong>Resident Evil (2002)</strong> đang hot trên VIBIO!</p>
                       <span>Vài giây trước</span>
                     </div>
                   </div>
@@ -155,15 +215,15 @@ const HomePage = () => {
       <div className="hero-section">
         <div className="hero-background">
           <video
+            ref={heroVideoRef}
             autoPlay
             loop
-            muted={isMuted}
+            muted
             playsInline
+            preload="auto"
             className="hero-video"
-            poster="https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=2787&auto=format&fit=crop"
           >
-            {/* Using your local anime video */}
-            <source src="/videoplayback.mp4" type="video/mp4" />
+            <source src="/videos/Resident Evil 9 Requiem - Official Trailer  State of Play 2026 - IGN (1080p, h264).mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
           <div className="hero-vignette"></div>
@@ -176,14 +236,14 @@ const HomePage = () => {
           </div>
 
           <h1 className="hero-title">
-            <span className="title-main">Resident Evil 9</span>
-            <span className="title-sub">Requieem</span>
+            <span className="title-main">Resident Evil</span>
+            <span className="title-sub">2002</span>
           </h1>
 
           <div className="hero-tags">
-            <span className="tag">Phim Zoombie</span>
+            <span className="tag">Phim Zombie</span>
             <span className="tag-separator">•</span>
-            <span className="tag">Phim Hanh Dong</span>
+            <span className="tag">Phim Hành Động</span>
             <div className="top-10-badge">
               <span className="top-10-text">TOP 10</span>
               <span className="top-1-text">#1 tại VIBIO hôm nay</span>
@@ -191,10 +251,10 @@ const HomePage = () => {
           </div>
 
           <div className="hero-actions">
-            <button className="btn-primary">
+            <Link to="/watch/1" className="btn-primary" style={{textDecoration:'none'}}>
               <Play size={24} fill="currentColor" />
               <span>Xem ngay</span>
-            </button>
+            </Link>
             <button className="btn-secondary">
               <Info size={24} />
               <span>Chi tiết</span>
@@ -214,6 +274,104 @@ const HomePage = () => {
           <MessageCircle size={28} />
         </button>
       </div>
+
+      {/* --- MODALS --- */}
+      {showVipModal && (
+        <div className="vibio-modal-overlay" onClick={() => setShowVipModal(false)}>
+          <div className="vibio-modal vip-modal" onClick={e => e.stopPropagation()}>
+            <button className="vibio-modal-close" onClick={() => setShowVipModal(false)}><X size={20} /></button>
+            <h2 className="vibio-modal-title">Nâng cấp Đặc Quyền VIP</h2>
+            <p>Trải nghiệm xem phim không giới hạn với chất lượng 4K, âm thanh vòm và không quảng cáo.</p>
+            <div className="vip-plans">
+              <div className="vip-plan-card">
+                <div className="plan-name">Cơ Bản</div>
+                <div className="plan-price">49.000đ<span>/tháng</span></div>
+                <ul className="plan-features">
+                  <li><Check size={16} color="#00d8ff"/> Chất lượng 1080p</li>
+                  <li><Check size={16} color="#00d8ff"/> Xem trên 1 thiết bị</li>
+                  <li><Check size={16} color="#00d8ff"/> Có quảng cáo</li>
+                </ul>
+                <button className="plan-btn" style={{background: 'rgba(255,255,255,0.1)', color: '#fff'}}>Chọn gói này</button>
+              </div>
+              <div className="vip-plan-card popular">
+                <div className="plan-name">Cao Cấp</div>
+                <div className="plan-price">99.000đ<span>/tháng</span></div>
+                <ul className="plan-features">
+                  <li><Check size={16} color="#d4af37"/> Chất lượng 4K HDR</li>
+                  <li><Check size={16} color="#d4af37"/> Xem trên 4 thiết bị</li>
+                  <li><Check size={16} color="#d4af37"/> Không quảng cáo</li>
+                  <li><Check size={16} color="#d4af37"/> Tải xuống xem offline</li>
+                </ul>
+                <button className="plan-btn">Đăng ký ngay</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showPromoModal && (
+        <div className="vibio-modal-overlay" onClick={() => setShowPromoModal(false)}>
+          <div className="vibio-modal" onClick={e => e.stopPropagation()}>
+            <button className="vibio-modal-close" onClick={() => setShowPromoModal(false)}><X size={20} /></button>
+            <h2 className="vibio-modal-title">Nhập mã VIBIO</h2>
+            <p style={{marginBottom: '20px'}}>Nhập mã khuyến mãi hoặc thẻ quà tặng của bạn để nhận các ưu đãi hấp dẫn.</p>
+            <div className="promo-input-wrapper">
+              <input 
+                type="text" 
+                className="promo-input" 
+                placeholder="VÍ DỤ: VIBIO2024VIP" 
+                value={promoCode}
+                onChange={e => setPromoCode(e.target.value)}
+              />
+              <button className="plan-btn" onClick={() => {
+                alert('Mã không hợp lệ hoặc đã hết hạn!');
+                setPromoCode('');
+              }}>Xác nhận mã</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showDeviceModal && (
+        <div className="vibio-modal-overlay" onClick={() => setShowDeviceModal(false)}>
+          <div className="vibio-modal" onClick={e => e.stopPropagation()}>
+            <button className="vibio-modal-close" onClick={() => setShowDeviceModal(false)}><X size={20} /></button>
+            <h2 className="vibio-modal-title">Thiết bị của bạn</h2>
+            <p>Quản lý các thiết bị đang đăng nhập tài khoản VIBIO của bạn.</p>
+            <div className="device-list">
+              <div className="device-item">
+                <div className="device-info">
+                  <Monitor size={24} className="device-icon" />
+                  <div className="device-details">
+                    <h4>Chrome - Windows</h4>
+                    <p>Đang sử dụng hiện tại</p>
+                  </div>
+                </div>
+              </div>
+              <div className="device-item">
+                <div className="device-info">
+                  <Smartphone size={24} className="device-icon" />
+                  <div className="device-details">
+                    <h4>iPhone 14 Pro Max</h4>
+                    <p>Hoạt động 2 giờ trước</p>
+                  </div>
+                </div>
+                <button className="device-logout-btn">Đăng xuất</button>
+              </div>
+              <div className="device-item">
+                <div className="device-info">
+                  <Tv size={24} className="device-icon" />
+                  <div className="device-details">
+                    <h4>Samsung Smart TV</h4>
+                    <p>Hoạt động hôm qua</p>
+                  </div>
+                </div>
+                <button className="device-logout-btn">Đăng xuất</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

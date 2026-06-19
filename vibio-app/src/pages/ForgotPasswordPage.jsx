@@ -1,5 +1,7 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { sendPasswordResetEmail } from 'firebase/auth'
+import { auth } from '../firebase'
 import './LoginPage.css'
 
 const MailIcon = () => (
@@ -37,89 +39,83 @@ const EyeOffIcon = () => (
 )
 
 export default function ForgotPasswordPage() {
-  const [step, setStep] = useState(1) // 1: Email, 2: OTP, 3: New Password
+  const videoRef = useRef(null)
+
+  /* Auto-unmute video on first user interaction (click/key/touch) */
+  useEffect(() => {
+    const unmute = () => {
+      if (videoRef.current) {
+        videoRef.current.muted = false
+        videoRef.current.play().catch(() => {})
+      }
+      document.removeEventListener('click', unmute)
+      document.removeEventListener('keydown', unmute)
+      document.removeEventListener('touchstart', unmute)
+    }
+    document.addEventListener('click', unmute, { once: true })
+    document.addEventListener('keydown', unmute, { once: true })
+    document.addEventListener('touchstart', unmute, { once: true })
+    return () => {
+      document.removeEventListener('click', unmute)
+      document.removeEventListener('keydown', unmute)
+      document.removeEventListener('touchstart', unmute)
+    }
+  }, [])
 
   const [email, setEmail] = useState('')
-  const [otp, setOtp] = useState('')
-  const [newPassword, setNewPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirm, setShowConfirm] = useState(false)
-  const [showPopup, setShowPopup] = useState(false)
-
   const [errors, setErrors] = useState({})
   const [isLoading, setIsLoading] = useState(false)
   const [focusedField, setFocusedField] = useState(null)
   const [isSuccess, setIsSuccess] = useState(false)
+  
+  const [showPopup, setShowPopup] = useState(false)
+  const [popupMessage, setPopupMessage] = useState('')
 
   const handleEmailSubmit = async (e) => {
     e.preventDefault()
+    setShowPopup(false)
     setPopupMessage('')
     const errs = {}
     if (!email.trim()) errs.email = 'Email is required'
     else if (!/\S+@\S+\.\S+/.test(email)) errs.email = 'Email is invalid'
 
     setErrors(errs)
-    if (Object.keys(errs).length > 0) {
-      if (errs.email === 'Email is invalid') {
-        setPopupMessage('Email không hợp lệ')
-        setTimeout(() => setPopupMessage(''), 3000)
-      }
-      return
-    }
-
-    setIsLoading(true)
-    await new Promise((r) => setTimeout(r, 1200))
-    setIsLoading(false)
-    setStep(2)
-  }
-
-  const handleOtpSubmit = async (e) => {
-    e.preventDefault()
-    setPopupMessage('')
-    const errs = {}
-    if (!otp.trim()) errs.otp = 'OTP is required'
-
-    setErrors(errs)
     if (Object.keys(errs).length > 0) return
 
     setIsLoading(true)
-    await new Promise((r) => setTimeout(r, 1200))
-    setIsLoading(false)
-
-    if (otp === '123456') { // Mock correct OTP
-      setStep(3)
-    } else {
+    try {
+      await sendPasswordResetEmail(auth, email)
+      setIsSuccess(true)
+    } catch (error) {
+      console.error(error)
       setShowPopup(true)
+      if (error.code === 'auth/user-not-found') {
+        setPopupMessage('Tài khoản không tồn tại.')
+      } else if (error.code === 'auth/invalid-email') {
+        setPopupMessage('Email không hợp lệ.')
+      } else {
+        setPopupMessage('Có lỗi xảy ra. Vui lòng thử lại.')
+      }
       setTimeout(() => setShowPopup(false), 3000)
+    } finally {
+      setIsLoading(false)
     }
-  }
-
-  const handlePasswordSubmit = async (e) => {
-    e.preventDefault()
-    setPopupMessage('')
-    const errs = {}
-    if (!newPassword) errs.newPassword = 'Password is required'
-    else if (newPassword.length < 6) errs.newPassword = 'Password must be at least 6 characters'
-
-    // xac nhan mat khau
-    if (!confirmPassword) errs.confirmPassword = 'Please confirm your password'
-    else if (newPassword !== confirmPassword) errs.confirmPassword = 'Passwords do not match'
-
-    setErrors(errs)
-    if (Object.keys(errs).length > 0) return
-
-    setIsLoading(true)
-    await new Promise((r) => setTimeout(r, 1200))
-    setIsLoading(false)
-    setIsSuccess(true)
   }
 
   return (
     <div className="login-page" id="forgot-password-page">
       <div className="login-bg">
-        <div className="login-bg__image" />
+        <video
+          ref={videoRef}
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          className="login-bg__video"
+        >
+          <source src="/videos/Resident Evil 9 Requiem - Official Trailer  State of Play 2026 - IGN (1080p, h264).mp4" type="video/mp4" />
+        </video>
         <div className="login-bg__overlay" />
         <div className="login-bg__vignette" />
       </div>
@@ -172,28 +168,24 @@ export default function ForgotPasswordPage() {
                 <line x1="12" y1="8" x2="12" y2="12"></line>
                 <line x1="12" y1="16" x2="12.01" y2="16"></line>
               </svg>
-              Invalid OTP! Please try again.
+              {popupMessage || 'Đã có lỗi xảy ra!'}
             </div>
           )}
 
           <h1 className="login-card__title">
-            {isSuccess ? 'Success!' : step === 1 ? 'Reset Password' : step === 2 ? 'Verify OTP' : 'New Password'}
+            {isSuccess ? 'Check Your Inbox' : 'Reset Password'}
           </h1>
           <p className="login-card__subtitle">
             {isSuccess
-              ? 'Your password has been successfully reset.'
-              : step === 1
-                ? 'Enter your email to receive a reset link.'
-                : step === 2
-                  ? `Enter the 6-digit OTP sent to ${email}`
-                  : 'Please enter your new password below.'}
+              ? `We have sent a password reset link to ${email}. Please check your inbox and follow the instructions.`
+              : 'Enter your email to receive a reset link.'}
           </p>
 
           {isSuccess ? (
             <div style={{ textAlign: 'center', margin: '10px 0 20px' }}>
               <Link to="/login" className="btn-submit" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', textDecoration: 'none' }}>Back to Sign In</Link>
             </div>
-          ) : step === 1 ? (
+          ) : (
             <form className="login-form" onSubmit={handleEmailSubmit} noValidate>
               <div className={`input-group ${focusedField === 'email' ? 'focused' : ''} ${email ? 'has-value' : ''} ${errors.email ? 'error' : ''}`}>
                 <span className="input-group__icon">
@@ -217,96 +209,6 @@ export default function ForgotPasswordPage() {
 
               <button type="submit" className={`btn-submit ${isLoading ? 'loading' : ''}`} disabled={isLoading}>
                 {isLoading ? <span className="btn-submit__spinner" /> : 'Send Reset Link'}
-              </button>
-            </form>
-          ) : step === 2 ? (
-            <form className="login-form" onSubmit={handleOtpSubmit} noValidate>
-              <div className={`input-group ${focusedField === 'otp' ? 'focused' : ''} ${otp ? 'has-value' : ''} ${errors.otp ? 'error' : ''}`}>
-                <span className="input-group__icon">
-                  <KeyIcon />
-                </span>
-                <div className="input-group__field">
-                  <input
-                    type="text"
-                    id="input-otp"
-                    value={otp}
-                    onChange={(e) => setOtp(e.target.value)}
-                    onFocus={() => setFocusedField('otp')}
-                    onBlur={() => setFocusedField(null)}
-                    maxLength={6}
-                    required
-                  />
-                  <label htmlFor="input-otp">Enter 6-digit OTP</label>
-                </div>
-                {errors.otp && <span className="input-group__error">{errors.otp}</span>}
-              </div>
-
-              <button type="submit" className={`btn-submit ${isLoading ? 'loading' : ''}`} disabled={isLoading}>
-                {isLoading ? <span className="btn-submit__spinner" /> : 'Verify OTP'}
-              </button>
-
-              <div style={{ textAlign: 'center', marginTop: '16px', fontSize: '13px', color: 'var(--text-secondary)' }}>
-                <p>(For testing, use OTP: <strong>123456</strong>)</p>
-              </div>
-            </form>
-          ) : (
-            <form className="login-form" onSubmit={handlePasswordSubmit} noValidate>
-              <div className={`input-group ${focusedField === 'newPassword' ? 'focused' : ''} ${newPassword ? 'has-value' : ''} ${errors.newPassword ? 'error' : ''}`}>
-                <span className="input-group__icon">
-                  <LockIcon />
-                </span>
-                <div className="input-group__field">
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    id="input-new-password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    onFocus={() => setFocusedField('newPassword')}
-                    onBlur={() => setFocusedField(null)}
-                    required
-                  />
-                  <label htmlFor="input-new-password">New Password</label>
-                </div>
-                <button
-                  type="button"
-                  className="input-group__toggle"
-                  onClick={() => setShowPassword(!showPassword)}
-                  tabIndex={-1}
-                >
-                  {showPassword ? <EyeOffIcon /> : <EyeIcon />}
-                </button>
-                {errors.newPassword && <span className="input-group__error">{errors.newPassword}</span>}
-              </div>
-
-              <div className={`input-group ${focusedField === 'confirmPassword' ? 'focused' : ''} ${confirmPassword ? 'has-value' : ''} ${errors.confirmPassword ? 'error' : ''}`}>
-                <span className="input-group__icon">
-                  <LockIcon />
-                </span>
-                <div className="input-group__field">
-                  <input
-                    type={showConfirm ? 'text' : 'password'}
-                    id="input-confirm-password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    onFocus={() => setFocusedField('confirmPassword')}
-                    onBlur={() => setFocusedField(null)}
-                    required
-                  />
-                  <label htmlFor="input-confirm-password">Confirm Password</label>
-                </div>
-                <button
-                  type="button"
-                  className="input-group__toggle"
-                  onClick={() => setShowConfirm(!showConfirm)}
-                  tabIndex={-1}
-                >
-                  {showConfirm ? <EyeOffIcon /> : <EyeIcon />}
-                </button>
-                {errors.confirmPassword && <span className="input-group__error">{errors.confirmPassword}</span>}
-              </div>
-
-              <button type="submit" className={`btn-submit ${isLoading ? 'loading' : ''}`} disabled={isLoading}>
-                {isLoading ? <span className="btn-submit__spinner" /> : 'Change Password'}
               </button>
             </form>
           )}

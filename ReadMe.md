@@ -1,5 +1,6 @@
 
 # VIBIO — Trang xem phim trực tuyến
+Status: In Progress
 
 ## Tên dự án & Mục đích
 Trang web VIBIO cung cấp trải nghiệm xem phim trực tuyến: phát video (HLS), quản lý danh mục và hồ sơ người dùng, xác thực với mật khẩu được mã hóa.

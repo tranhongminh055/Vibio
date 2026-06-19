@@ -1,5 +1,7 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { signInWithEmailAndPassword } from 'firebase/auth'
+import { auth } from '../firebase'
 import './LoginPage.css'
 
 /* ——— SVG Icon helpers ——— */
@@ -39,7 +41,7 @@ const CheckIcon = () => (
 
 export default function SignInPage() {
   const navigate = useNavigate()
-  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [remember, setRemember] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
@@ -50,9 +52,8 @@ export default function SignInPage() {
 
   const validate = () => {
     const errs = {}
-    if (!username.trim()) errs.username = 'Username is required'
-    else if (username.trim().length < 3) errs.username = 'Username must be at least 3 characters'
-    else if (!/^[a-zA-Z0-9_]+$/.test(username.trim())) errs.username = 'Username format is invalid'
+    if (!email.trim()) errs.email = 'Email is required'
+    else if (!/\S+@\S+\.\S+/.test(email)) errs.email = 'Email format is invalid'
     if (!password) errs.password = 'Password is required'
     else if (password.length < 6) errs.password = 'Password must be at least 6 characters'
     return errs
@@ -64,11 +65,8 @@ export default function SignInPage() {
     const errs = validate()
     setErrors(errs)
     if (Object.keys(errs).length > 0) {
-      if (errs.username === 'Username must be at least 3 characters') {
-        setPopupMessage('Tên đăng nhập quá ngắn')
-        setTimeout(() => setPopupMessage(''), 3000)
-      } else if (errs.username === 'Username format is invalid') {
-        setPopupMessage('Tên đăng nhập không hợp lệ')
+      if (errs.email === 'Email format is invalid') {
+        setPopupMessage('Email không hợp lệ')
         setTimeout(() => setPopupMessage(''), 3000)
       } else if (errs.password === 'Password must be at least 6 characters') {
         setPopupMessage('Mật khẩu quá ngắn')
@@ -79,41 +77,62 @@ export default function SignInPage() {
 
     setIsLoading(true)
     try {
-      const response = await fetch('http://localhost:3001/api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password })
-      })
-      
-      const data = await response.json()
-      
-      if (!response.ok) {
-        setPopupMessage(data.error || 'Login failed')
-        setTimeout(() => setPopupMessage(''), 3000)
-        setIsLoading(false)
-        return
-      }
-      
+      const userCredential = await signInWithEmailAndPassword(auth, email, password)
       // Lưu trạng thái đăng nhập vào localStorage
       localStorage.setItem('vibio_authenticated', 'true')
-      localStorage.setItem('vibio_user', username)
-      if (data.token) localStorage.setItem('vibio_token', data.token)
+      localStorage.setItem('vibio_user', userCredential.user.email)
       navigate('/home')
     } catch (err) {
       console.error('Login Error:', err)
-      setPopupMessage('Lỗi kết nối tới máy chủ')
+      if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
+        setPopupMessage('Sai email hoặc mật khẩu')
+      } else {
+        setPopupMessage('Lỗi kết nối tới Firebase')
+      }
       setTimeout(() => setPopupMessage(''), 3000)
     } finally {
       setIsLoading(false)
     }
   }
 
+  const videoRef = useRef(null)
+
+  /* Auto-unmute video on first user interaction (click/key/touch) */
+  useEffect(() => {
+    const unmute = () => {
+      if (videoRef.current) {
+        videoRef.current.muted = false
+        videoRef.current.play().catch(() => {})
+      }
+      document.removeEventListener('click', unmute)
+      document.removeEventListener('keydown', unmute)
+      document.removeEventListener('touchstart', unmute)
+    }
+    document.addEventListener('click', unmute, { once: true })
+    document.addEventListener('keydown', unmute, { once: true })
+    document.addEventListener('touchstart', unmute, { once: true })
+    return () => {
+      document.removeEventListener('click', unmute)
+      document.removeEventListener('keydown', unmute)
+      document.removeEventListener('touchstart', unmute)
+    }
+  }, [])
+
   return (
     <div className="login-page" id="signin-page">
+      {/* Video Watermark Background */}
       <div className="login-bg">
-        <div className="login-bg__image" />
+        <video
+          ref={videoRef}
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          className="login-bg__video"
+        >
+          <source src="/videos/Resident Evil 9 Requiem - Official Trailer  State of Play 2026 - IGN (1080p, h264).mp4" type="video/mp4" />
+        </video>
         <div className="login-bg__overlay" />
         <div className="login-bg__vignette" />
       </div>
@@ -177,24 +196,24 @@ export default function SignInPage() {
           </p>
 
           <form className="login-form" id="signin-form" onSubmit={handleSubmit} noValidate>
-            <div className={`input-group ${focusedField === 'username' ? 'focused' : ''} ${username ? 'has-value' : ''} ${errors.username ? 'error' : ''}`}>
+            <div className={`input-group ${focusedField === 'email' ? 'focused' : ''} ${email ? 'has-value' : ''} ${errors.email ? 'error' : ''}`}>
               <span className="input-group__icon">
                 <UserIcon />
               </span>
               <div className="input-group__field">
                 <input
-                  type="text"
-                  id="input-username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  onFocus={() => setFocusedField('username')}
+                  type="email"
+                  id="input-email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  onFocus={() => setFocusedField('email')}
                   onBlur={() => setFocusedField(null)}
-                  autoComplete="username"
+                  autoComplete="email"
                   required
                 />
-                <label htmlFor="input-username">Username</label>
+                <label htmlFor="input-email">Email Address</label>
               </div>
-              {errors.username && <span className="input-group__error">{errors.username}</span>}
+              {errors.email && <span className="input-group__error">{errors.email}</span>}
             </div>
 
             <div className={`input-group ${focusedField === 'password' ? 'focused' : ''} ${password ? 'has-value' : ''} ${errors.password ? 'error' : ''}`}>

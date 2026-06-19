@@ -98,6 +98,26 @@ const WatchPage = () => {
     'ttb': { tmdbId: 396535, title: "Train to Busan", year: "2016", duration: "1h 58m", desc: "Thiết quân luật được ban bố khi một đợt bùng phát virus bí ẩn đẩy Hàn Quốc vào tình trạng khẩn cấp. Những người trên chuyến tàu tốc hành đến Busan phải chiến đấu để sinh tồn...", ophimEmbed: 'https://vip.opstream12.com/share/84d9ee44e457ddef7f2c4f25dc8fa865' },
     'jp1': { tmdbId: 329, title: "Công Viên Kỷ Jura Phần 1", year: "1993", duration: "2h 7m", desc: "Một doanh nhân giàu có bí mật tạo ra một công viên giải trí với những con khủng long sống được tái tạo từ ADN tiền sử. Tuy nhiên, khi hệ thống an ninh bị vô hiệu hóa, những con khủng long thoát ra ngoài...", ophimEmbed: 'https://vip.opstream12.com/share/74d3b2328adadbd5c9740b050d0a333c' },
     'jp2': { tmdbId: 330, title: "Công Viên Kỷ Jura Phần 2", year: "1997", duration: "2h 9m", desc: "Bốn năm sau thảm họa Công Viên Kỷ Jura, tỷ phú John Hammond tiết lộ rằng ông đã nhân giống thêm khủng long tại một địa điểm bí mật. Ian Malcolm cùng nhóm thám hiểm lên đường ghi lại hành vi tự nhiên của chúng...", ophimEmbed: 'https://vip.opstream16.com/share/4c56ff4ce4aaf9573aa5dff913df997a' },
+    'sat-thu-john-wick': { tmdbId: 245891, title: "Sát Thủ John Wick", year: "2014", duration: "1h 41m", desc: "Sát thủ huyền thoại John Wick tái xuất." },
+    'sat-thu-john-wick-2': { tmdbId: 324552, title: "Sát Thủ John Wick 2", year: "2017", duration: "2h 2m", desc: "Sát thủ huyền thoại John Wick tái xuất." },
+    'sat-thu-john-wick-3-chuan-bi-chien-tranh': { tmdbId: 458156, title: "Sát Thủ John Wick 3", year: "2019", duration: "2h 11m", desc: "Sát thủ huyền thoại John Wick tái xuất." },
+    'sat-thu-john-wick-phan-4': { tmdbId: 603692, title: "Sát Thủ John Wick 4", year: "2023", duration: "2h 49m", desc: "Sát thủ huyền thoại John Wick tái xuất." },
+    'khach-san-continental-tu-the-gioi-cua-john-wick': { tmdbId: 938116, title: "Khách Sạn Continental", year: "2023", duration: "1h 30m", desc: "Khách Sạn Continental" },
+    'tu-vu-tru-john-wick-ballerina': { tmdbId: 693134, title: "Ballerina", year: "2025", duration: "2h", desc: "Ballerina" },
+    'thanh-guom-diet-quy-asakusa': { tmdbId: 85937, title: "Movie: Huyết Quỷ Asakusa", year: "2022", duration: "1h 42m", desc: "Tanjiro đối mặt với Muzan tại Asakusa." },
+    'thanh-guom-diet-quy-dinh-thu-tsuzumi': { tmdbId: 85937, title: "Movie: Dinh Thự Tsuzumi", year: "2022", duration: "1h 26m", desc: "Cuộc chiến trong dinh thự với ác quỷ Kyogai." },
+    'thanh-guom-diet-quy-nui-nhen-nada': { tmdbId: 85937, title: "Movie: Núi Nhện Nada", year: "2020", duration: "2h 18m", desc: "Sát quỷ đội tiêu diệt gia đình Nhện Quỷ." },
+    'thanh-guom-diet-quy-hoi-nghi-tru-cot-dinh-thu-buom-buom': { tmdbId: 85937, title: "Movie: Hội Nghị Trụ Cột", year: "2020", duration: "1h 45m", desc: "Tanjiro bị đưa ra xét xử trước mặt các Trụ Cột." },
+    'thanh-guom-diet-quy-chuyen-tau-vo-tan': { tmdbId: 635302, title: "Movie: Chuyến Tàu Vô Tận", year: "2020", duration: "1h 56m", desc: "Sát quỷ đội điều tra sự biến mất bí ẩn trên chuyến tàu vô tận." },
+    'thanh-guom-diet-quy-vo-han-thanh': { tmdbId: 1301633, title: "Movie: Vô Hạn Thành", year: "2025", duration: "2h 35m", desc: "Cuộc chiến cuối cùng tại Vô Hạn Thành." },
+    'doraemon-doi-ban-than': { tmdbId: 281335, title: "Doraemon: Đôi Bạn Thân", year: "2014", duration: "1h 35m", desc: "Câu chuyện cảm động về tình bạn giữa Nobita và Doraemon." },
+    'doraemon-doi-ban-than-2': { tmdbId: 651680, title: "Doraemon: Đôi Bạn Thân 2", year: "2020", duration: "1h 36m", desc: "Nobita quay về quá khứ để gặp lại người bà quá cố." },
+    'doraemon-nobita-va-nhung-hiep-si-khong-gian': { tmdbId: 326759, title: "Nobita Và Hiệp Sĩ Không Gian", year: "2015", duration: "1h 40m", desc: "Cuộc phiêu lưu vào không gian của nhóm bạn." },
+    'doraemon-nobita-va-nhung-ban-khung-long-moi': { tmdbId: 654203, title: "Nobita Và Những Bạn Khủng Long Mới", year: "2020", duration: "1h 50m", desc: "Chuyến phiêu lưu về thời tiền sử với cặp khủng long song sinh." },
+    'doraemon-nobita-va-cuoc-chien-vu-tru-ti-hon': { tmdbId: 785640, title: "Nobita Và Cuộc Chiến Vũ Trụ Tí Hon", year: "2022", duration: "1h 48m", desc: "Cuộc chiến giúp đỡ người bạn ngoài hành tinh bé nhỏ." },
+    'doraemon-nobita-va-vung-dat-ly-tuong-tren-bau-troi': { tmdbId: 1042571, title: "Nobita Và Vùng Đất Lý Tưởng", year: "2023", duration: "1h 47m", desc: "Hành trình tìm kiếm Utopia trên bầu trời." },
+    'doraemon-nobita-va-binh-doan-nguoi-sat': { tmdbId: 281335, title: "Nobita Và Binh Đoàn Người Sắt", year: "2011", duration: "1h 48m", desc: "Cuộc chiến bảo vệ Trái Đất khỏi binh đoàn Robot ngoài hành tinh." },
+    'doraemon-nobita-va-cuoc-dai-thuy-chien-o-xu-so-nguoi-ca': { tmdbId: 281335, title: "Đại Thủy Chiến Người Cá", year: "2010", duration: "1h 40m", desc: "Cuộc phiêu lưu dưới đại dương để bảo vệ tộc người cá." }
   };
 
   // Add Cyberpunk 10 episodes
@@ -413,13 +433,45 @@ const WatchPage = () => {
         if (movie.ophimEmbed) {
           finalUrl = movie.ophimEmbed;
         }
-        // Handle TV Shows specifically (Cyberpunk)
-        else if (id && id.toString().startsWith('cp-')) {
-          const ep = id.replace('cp-', '');
-          finalUrl = `https://vidsrc.to/embed/tv/105248/1/${ep}`;
-        } else if (id && id.toString().startsWith('cp2-')) {
-          const ep = id.replace('cp2-', '');
-          finalUrl = `https://vidsrc.to/embed/tv/105248/1/${ep}`;
+        // Handle TV Shows specifically (Cyberpunk) — use NguonC API for embed (streamc.xyz works reliably)
+        else if (id && (id.toString().startsWith('cp-') || id.toString().startsWith('cp2-'))) {
+          // Cyberpunk Edgerunners
+          // id format from CategoryPage: cp-<ep> and cp2-<ep>
+          const isSeason2 = id.toString().startsWith('cp2-');
+          const ep = isSeason2 ? id.replace('cp2-', '') : id.replace('cp-', '');
+          const epIndex = parseInt(ep) - 1;
+
+          // 1. Try NguonC API first (streamc.xyz embeds are most reliable)
+          try {
+            const nguoncRes = await fetch('https://phim.nguonc.com/api/film/cyberpunk-edgerunners');
+            const nguoncData = await nguoncRes.json();
+            const embedLink = nguoncData?.movie?.episodes?.[0]?.items?.[epIndex]?.embed;
+            if (embedLink) {
+              setEmbedBaseUrl(embedLink);
+              setEmbedUrl(applyResolutionToUrl(embedLink, resolution));
+              return; // Exit early — NguonC embed found
+            }
+          } catch (e) {
+            console.error("Lỗi khi lấy link Cyberpunk từ NguonC:", e);
+          }
+
+          // 2. Fallback to Ophim API
+          try {
+            const ophimDetailRes = await fetch('https://ophim1.com/v1/api/phim/cyberpunk-edgerunners');
+            const ophimDetailData = await ophimDetailRes.json();
+            const embedLink = ophimDetailData?.data?.item?.episodes?.[0]?.server_data?.[epIndex]?.link_embed;
+            if (embedLink) {
+              setEmbedBaseUrl(embedLink);
+              setEmbedUrl(applyResolutionToUrl(embedLink, resolution));
+              return; // Exit early — Ophim embed found
+            }
+          } catch (e) {
+            console.error("Lỗi khi lấy link Cyberpunk từ Ophim:", e);
+          }
+
+          // 3. Last resort: vidsrc.to
+          const season = isSeason2 ? 2 : 1;
+          finalUrl = `https://vidsrc.to/embed/tv/105248/${season}/${ep}`;
         } else if (id && id.toString().startsWith('sao-')) {
           const parts = id.toString().split('-');
           const season = parseInt(parts[1]);
@@ -444,6 +496,20 @@ const WatchPage = () => {
 
           // Fallback to vidsrc.to if Ophim fails
           finalUrl = `https://vidsrc.to/embed/tv/tt2250192/${parts[1]}/${parts[2]}`;
+        } else if (id && (id.toString().includes('john-wick') || id.toString().includes('thanh-guom-diet-quy') || id.toString().includes('doraemon'))) {
+          try {
+            const ophimDetailRes = await fetch(`https://ophim1.com/v1/api/phim/${id}`);
+            const ophimDetailData = await ophimDetailRes.json();
+            const embedLink = ophimDetailData?.data?.item?.episodes?.[0]?.server_data?.[0]?.link_embed;
+            if (embedLink) {
+              setEmbedBaseUrl(embedLink);
+              setEmbedUrl(applyResolutionToUrl(embedLink, resolution));
+              return;
+            }
+          } catch (e) {
+            console.error("Lỗi khi lấy link từ Ophim:", e);
+          }
+          finalUrl = `https://vidsrc.to/embed/movie/${movie?.tmdbId || ''}`;
         } else if (id && id.toString().replace(/ /g, '-').startsWith('aot-')) {
           const normalizedId = id.toString().replace(/ /g, '-');
           const parts = normalizedId.split('-');
@@ -492,6 +558,13 @@ const WatchPage = () => {
     if (!res || res === 'Auto') return url;
     try {
       const u = new URL(url);
+
+      // vidsrc.to embed thường không hỗ trợ đổi chất lượng qua query `quality/q`
+      // nên giữ nguyên URL để tránh iframe load hoài/black screen.
+      if (u.hostname.includes('vidsrc.to')) {
+        return url;
+      }
+
       const paramMap = {
         '144p': '144',
         '240p': '240',
@@ -650,9 +723,11 @@ const WatchPage = () => {
               // Show poster + play overlay for playlist embeds (require user action)
               <div className="playlist-poster" style={{ width: '100%', height: '100%', background: '#000', position: 'relative' }}>
                 <img src={selectedProgram.poster || ''} alt={selectedProgram.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                <button
+                  <button
                   className="playlist-play-btn"
-                  onClick={async () => {
+                  onClick={async (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
                     // If it's Ông Trùm, we fetch directly from Ophim to bypass YouTube issues
                     if (selectedProgram.id && selectedProgram.id.startsWith('ongtrum-')) {
                       const epNum = parseInt(selectedProgram.id.split('-')[1]);
@@ -777,7 +852,7 @@ const WatchPage = () => {
               null
             )}
             {selectedProgram && (
-              <div style={{ position: 'absolute', left: 24, bottom: 24, background: 'rgba(0,0,0,0.6)', color: '#fff', padding: '8px 12px', borderRadius: 6 }}>
+          <div style={{ position: 'absolute', left: 24, bottom: 24, background: 'rgba(0,0,0,0.6)', color: '#fff', padding: '8px 12px', borderRadius: 6, pointerEvents: 'none' }}>
                 {selectedProgram.title}
               </div>
             )}
@@ -814,8 +889,6 @@ const WatchPage = () => {
             scrolling="no"
             allow="autoplay *; encrypted-media *; fullscreen *; picture-in-picture *; web-share *; clipboard-write *"
             allowFullScreen
-            sandbox="allow-scripts allow-same-origin allow-presentation"
-            referrerPolicy="no-referrer"
             title={movie.title}
             style={{ border: 'none' }}
           />
